@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Hakem Bank</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Prank Elements */
+        #binaryCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            background: black;
+            z-index: 100;
+        }
+
+        #hackerOverlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0F0;
+            font-size: 50px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 101;
+            display: none;
+            text-shadow: 0 0 20px #0F0;
+            animation: flash 0.5s infinite;
+        }
+
+        #timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: red;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 30px;
+            z-index: 102;
+            display: none;
+        }
+
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Login UI */
+        .login-card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 350px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .brand-name { color: #1a4a7c; font-size: 28px; font-weight: bold; margin-bottom: 20px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; font-size: 14px; color: #666; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #1a4a7c; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="binaryCanvas"></canvas>
+    <div id="hackerOverlay">SYSTEM COMPROMISED<br>YOU HAVE BEEN HACKED!</div>
+    <div id="timer">SYSTEM PURGE IN: 60s</div>
+
+    <div class="login-card" id="mainCard">
+        <div class="brand-name">HAKEM BANK</div>
+        <form id="hakemLoginForm">
+            <div class="form-group">
+                <label for="username">User ID</label>
+                <input type="text" id="username" placeholder="Enter your ID" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit">Secure Login</button>
+        </form>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('binaryCanvas');
+        const ctx = canvas.getContext('2d');
+        const overlay = document.getElementById('hackerOverlay');
+        const timerDisplay = document.getElementById('timer');
+
+        function startPrank() {
+            document.getElementById('mainCard').style.display = 'none';
+            canvas.style.display = 'block';
+            overlay.style.display = 'block';
+            timerDisplay.style.display = 'block';
+            
+            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth;
+
+            const binary = "01010101HAKEMBANK01010101";
+            const fontSize = 16;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+            for (let x = 0; x < columns; x++) drops[x] = 1;
+
+            function draw() {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#0F0";
+                ctx.font = fontSize + "px arial";
+                for (let i = 0; i < drops.length; i++) {
+                    const text = binary[Math.floor(Math.random() * binary.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                }
+            }
+            setInterval(draw, 33);
+
+            // Self-destruct timer logic
+            let timeLeft = 60;
+            const countdown = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = `SYSTEM PURGE IN: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20%; font-family:monospace;'>HARD DRIVE WIPED. GOODBYE.</h1>";
+                    document.body.style.backgroundColor = "black";
+                }
+            }, 1000);
+        }
+
+        document.getElementById('hakemLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            startPrank();
+        });
+    </script>
+</body>
+</html>
